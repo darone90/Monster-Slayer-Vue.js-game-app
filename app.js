@@ -10,6 +10,16 @@ const app = Vue.createApp({
         }
     },
 
+    computed: {
+        monsterBar() {
+            return {width: this.monsterHealth + '%'}
+        },
+
+        playerBar() {
+            return {width: this.playerHealth + '%'}
+        }
+    },
+
     methods: {
         attackMonster() {
             const damage = getDamage(5,12);
