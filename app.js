@@ -36,12 +36,38 @@ const app = Vue.createApp({
             const damage = getDamage(8,15);
             this.playerHealth -= damage;
             this.round++;
+            this.BeastRage();
         },
 
         specialAttack() {
             const damage = getDamage(10, 25);
             this.monsterHealth -= damage;
             this.attackPlayer();
+        },
+
+        heal() {
+            const heal = getDamage(8, 20);
+            if(this.playerHealth + heal > 100) {
+                this.playerHealth = 100;
+            } else {
+                this.playerHealth += heal;
+            }
+            this.attackPlayer();
+        },
+
+        BeastRage() {
+            const chance = getDamage(1, 10);
+            if(chance > 8) {
+                const criticDamage = getDamage(15,25)
+                const blockChance = getDamage(1,10);
+                if(blockChance < 5) {
+                    this.playerHealth -= criticDamage;
+                } else if (blockChance >= 5 && blockChance < 8) {
+                    this.playerHealth -= criticDamage/2;
+                } else {
+                    return
+                }
+            }
         }
     },
 })
