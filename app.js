@@ -14,6 +14,7 @@ const app = Vue.createApp({
             round: 0,
             healUsed: false,
             battleLog: [],
+            escaping: 2
         }
     },
 
@@ -81,6 +82,7 @@ const app = Vue.createApp({
         attackMonster() {
             const damage = getDamage(5,12);
             this.monsterHealth -= damage;
+            this.addLogMessage("You","attack", "attack the monster and give", damage + 'HP')
             this.attackPlayer();
         },
 
@@ -88,12 +90,14 @@ const app = Vue.createApp({
             const damage = getDamage(8,15);
             this.playerHealth -= damage;
             this.round++;
+            this.addLogMessage("Monster","attack", "attack you and give", damage + 'HP')
             this.BeastRage();
         },
 
         specialAttack() {
             const damage = getDamage(10, 25);
             this.monsterHealth -= damage;
+            this.addLogMessage("You","attack", "use a special attack (Roly Poly)! it gives", damage + 'HP')
             this.attackPlayer();
         }, 
 
@@ -105,6 +109,7 @@ const app = Vue.createApp({
                 this.playerHealth += heal;
             }
             this.healUsed = true;
+            this.addLogMessage("You", "heal", "use a healing spell, you gain", heal + 'HP')
             this.round++;
         },
 
@@ -115,9 +120,12 @@ const app = Vue.createApp({
                 const blockChance = getDamage(1,10);
                 if(blockChance < 5) {
                     this.playerHealth -= criticDamage;
+                    this.addLogMessage("Monster","attack", "goes berserk rage! You did`t doge and take", criticDamage + 'HP')
                 } else if (blockChance >= 5 && blockChance < 8) {
+                    this.addLogMessage("Monster","attack", `goes berserk rage! You use your shild little bit to late but take only half from ${criticDamage}`, criticDamage/2 + 'HP')
                     this.playerHealth -= criticDamage/2;
                 } else {
+                    this.addLogMessage("Monster","attack", "goes berserk rage! But you are alert and dodge in right time! Beast missed you ",  '0HP')
                     return
                 }
             }
@@ -133,9 +141,10 @@ const app = Vue.createApp({
         },
 
         restart() {
-            this.palyer = 0;
+            this.player = 0;
             this.monster = 0;
             this.winner = null;
+            this.escaping = 2;
             this.newGame();
         },
 
@@ -143,15 +152,21 @@ const app = Vue.createApp({
             const chanceToEscape = getDamage(1,10)
             if(chanceToEscape < 7) {
                 this.result = 'monster'
+                this.addLogMessage("You","run", " run in panic but beast is faster!",  '100HP');
+                this.monster++;
             } else if (chanceToEscape >= 7 && chanceToEscape < 10){
-                this.result = 'draw'
+                this.addLogMessage("You","run", "take the tactical retreat! Beast leave you",  '0HP');
+                this.result = 'draw';
             } else {
-                this.result = 'player'
+                this.result = 'player';
+                this.addLogMessage("You","run", "trying to escape, beast chasing you but stumb, smash his stupid face and die",  '0HP');
+                this.player++;
             }
+            this.escaping--;
         },
 
-        addLogMessage(who, what, value) {
-            this.battleLog.unshift({who,what,value});
+        addLogMessage(who, type, what, value) {
+            this.battleLog.unshift({who,what,value, type});
         }
     },
 })

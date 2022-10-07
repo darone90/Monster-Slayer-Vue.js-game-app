@@ -117,3 +117,12 @@ button:disabled {
 .log--heal {
   color: green;
 }
+
+.log--run {
+  display: none;
+}
+
+.oneLog {
+  display: flex;
+  flex-direction: row;
+}

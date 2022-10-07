@@ -40,7 +40,7 @@
       <section class="container" v-if="result">
         <h2>Game Over</h2>
         <h3 v-if="result === 'monster'">You are dead! (but mr cobra i need to back)</h3>
-        <h3 v-else-if="result === 'player'">You slay the beast my dear hors (on the white knight)</h3>
+        <h3 v-else-if="result === 'player'">You slay the beast my dear horse (on the white knight)</h3>
         <h3 v-else>Both beasts die! It`s a draw</h3>
         <button @click="newGame">Try again !</button>
       </section>
@@ -48,12 +48,18 @@
         <button @click="attackMonster">ATTACK</button>
         <button @click="specialAttack" :disabled="disableButton">SPECIAL ATTACK</button>
         <button @click="heal" :disabled="healUsed">HEAL</button>
-        <button @click="tryEscape">Escape</button>
+        <button @click="tryEscape" :disabled="escaping < 1">Escape ({{escaping}})</button>
       </section>
      </div>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul>
+          <li v-for="log in battleLog" class="oneLog">
+            <span :class="log.who === 'You' ? 'log--player' : 'log--monster'">{{log.who}}</span>
+            <p>{{log.what}}</p>
+            <span :class="{'log--damage': log.type === 'attack', 'log--heal': log.type === 'heal', 'log--run': log.type === 'run'}">{{log.value}}</span>
+          </li>
+        </ul>
       </section>
     </div>
   </body>
