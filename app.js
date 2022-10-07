@@ -8,6 +8,9 @@ const app = Vue.createApp({
             playerHealth: 100,
             monsterHealth: 100,
             result: null,
+            winner: null,
+            player: 0,
+            monster: 0,
             round: 0,
             healUsed: false
         }
@@ -15,11 +18,19 @@ const app = Vue.createApp({
 
     computed: {
         monsterBar() {
-            return {width: this.monsterHealth + '%'}
+            if(this.monsterHealth < 0) {
+                return {width: '0%'}
+            } else {
+                return {width: this.monsterHealth + '%'}
+            }; 
         },
 
         playerBar() {
-            return {width: this.playerHealth + '%'}
+            if(this.playerHealth < 0) {
+                return {width: '0%'}
+            } else {
+                return {width: this.playerHealth + '%'}
+            };
         },
 
         disableButton() {
@@ -32,7 +43,8 @@ const app = Vue.createApp({
             if(value <=0 && this.monsterHealth <= 0) {
                 this.result = 'draw'
             } else if (value <=0){
-                this.result = 'monster'
+                this.result = 'monster';
+                this.monster++;
             }
         },
 
@@ -40,7 +52,26 @@ const app = Vue.createApp({
             if(value <=0 && this.playerHealth <= 0) {
                 this.result = 'draw'
             } else if (value <=0){
-                this.result = 'player'
+                this.result = 'player';
+                this.player++;
+            }
+        },
+
+        player(value) {
+            if(value === 3) {
+                this.winner = 'player';
+                setTimeout(() => {
+                    this.restart()
+                },5000);
+            }    
+        },
+
+        monster(value) {
+            if(value === 3) {
+                this.winner = 'monster';
+                setTimeout(() => {
+                    this.restart()
+                },5000);
             }
         }
     },
@@ -73,6 +104,7 @@ const app = Vue.createApp({
                 this.playerHealth += heal;
             }
             this.healUsed = true;
+            this.round++;
         },
 
         BeastRage() {
@@ -87,6 +119,32 @@ const app = Vue.createApp({
                 } else {
                     return
                 }
+            }
+        },
+
+        newGame() {
+            this.playerHealth = 100;
+            this.monsterHealth = 100;
+            this.result = null;
+            this.round = 0;
+            this.healUsed = false;
+        },
+
+        restart() {
+            this.palyer = 0;
+            this.monster = 0;
+            this.winner = null;
+            this.newGame();
+        },
+
+        tryEscape() {
+            const chanceToEscape = getDamage(1,10)
+            if(chanceToEscape < 7) {
+                this.result = 'monster'
+            } else if (chanceToEscape >= 7 && chanceToEscape < 10){
+                this.result = 'draw'
+            } else {
+                this.result = 'player'
             }
         }
     },
