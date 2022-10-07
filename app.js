@@ -12,7 +12,8 @@ const app = Vue.createApp({
             player: 0,
             monster: 0,
             round: 0,
-            healUsed: false
+            healUsed: false,
+            battleLog: [],
         }
     },
 
@@ -128,6 +129,7 @@ const app = Vue.createApp({
             this.result = null;
             this.round = 0;
             this.healUsed = false;
+            this.battleLog = [];
         },
 
         restart() {
@@ -146,6 +148,10 @@ const app = Vue.createApp({
             } else {
                 this.result = 'player'
             }
+        },
+
+        addLogMessage(who, what, value) {
+            this.battleLog.unshift({who,what,value});
         }
     },
 })
