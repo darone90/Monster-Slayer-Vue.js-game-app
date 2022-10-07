@@ -7,7 +7,9 @@ const app = Vue.createApp({
         return {
             playerHealth: 100,
             monsterHealth: 100,
-            round: 0
+            result: null,
+            round: 0,
+            healUsed: false
         }
     },
 
@@ -22,6 +24,24 @@ const app = Vue.createApp({
 
         disableButton() {
             return this.round % 3 !== 0 
+        }
+    },
+
+    watch: {
+        playerHealth(value) {
+            if(value <=0 && this.monsterHealth <= 0) {
+                this.result = 'draw'
+            } else if (value <=0){
+                this.result = 'monster'
+            }
+        },
+
+        monsterHealth(value) {
+            if(value <=0 && this.playerHealth <= 0) {
+                this.result = 'draw'
+            } else if (value <=0){
+                this.result = 'player'
+            }
         }
     },
 
@@ -43,16 +63,16 @@ const app = Vue.createApp({
             const damage = getDamage(10, 25);
             this.monsterHealth -= damage;
             this.attackPlayer();
-        },
+        }, 
 
         heal() {
-            const heal = getDamage(8, 20);
+            const heal = getDamage(8, 25);
             if(this.playerHealth + heal > 100) {
                 this.playerHealth = 100;
             } else {
                 this.playerHealth += heal;
             }
-            this.attackPlayer();
+            this.healUsed = true;
         },
 
         BeastRage() {
